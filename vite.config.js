@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   
-  base: '/your-repo-name/',
+  base: '/', // 如果部署到 username.github.io/repo-name，改为 '/repo-name/'
   
   build: {
     outDir: 'dist',

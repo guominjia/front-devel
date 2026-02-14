@@ -1,334 +1,248 @@
 import { useState, useEffect } from 'react'
-import './App.css'
 
 function App() {
-  const [activeSection, setActiveSection] = useState('intro')
+  const [activeSection, setActiveSection] = useState('home')
+  const [scrollY, setScrollY] = useState(0)
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = document.querySelectorAll('.section')
-      let current = 'intro'
-
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop
-        const sectionHeight = section.clientHeight
-        if (window.scrollY >= (sectionTop - 200)) {
-          current = section.getAttribute('id')
-        }
-      })
-
-      setActiveSection(current)
-    }
-
+    const handleScroll = () => setScrollY(window.scrollY)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const scrollToSection = (e, sectionId) => {
-    e.preventDefault()
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  // 学习路径数据
+  const learningPaths = [
+    {
+      id: 1,
+      title: '前端开发',
+      subtitle: 'Frontend Development',
+      progress: 65,
+      topics: ['HTML/CSS', 'JavaScript', 'React', 'Vue', 'TypeScript'],
+      color: '#FF6B6B',
+      icon: '🎨'
+    },
+    {
+      id: 2,
+      title: '后端开发',
+      subtitle: 'Backend Development',
+      progress: 45,
+      topics: ['Node.js', 'Python', 'Database', 'API Design', 'Docker'],
+      color: '#4ECDC4',
+      icon: '⚙️'
+    },
+    {
+      id: 3,
+      title: '算法与数据结构',
+      subtitle: 'Algorithms & DS',
+      progress: 30,
+      topics: ['Array', 'Tree', 'Graph', 'DP', 'Sorting'],
+      color: '#FFE66D',
+      icon: '🧩'
+    },
+    {
+      id: 4,
+      title: '系统设计',
+      subtitle: 'System Design',
+      progress: 20,
+      topics: ['Scalability', 'Microservices', 'Cache', 'Load Balancing'],
+      color: '#A8E6CF',
+      icon: '🏗️'
     }
-  }
+  ]
+
+  // 知识卡片数据
+  const knowledgeCards = [
+    {
+      category: '最近学习',
+      items: [
+        { title: 'React Hooks 进阶', date: '2024-02-01', tags: ['React', 'Frontend'] },
+        { title: 'Docker 容器化部署', date: '2024-01-28', tags: ['DevOps', 'Docker'] },
+        { title: 'RESTful API 设计原则', date: '2024-01-25', tags: ['API', 'Backend'] }
+      ]
+    },
+    {
+      category: '待学习',
+      items: [
+        { title: 'Kubernetes 入门', date: '计划中', tags: ['DevOps', 'K8s'] },
+        { title: 'GraphQL 实践', date: '计划中', tags: ['API', 'Backend'] },
+        { title: 'WebAssembly 探索', date: '计划中', tags: ['Performance'] }
+      ]
+    }
+  ]
+
+  // 学习资源
+  const resources = [
+    { name: 'MDN Web Docs', url: 'https://developer.mozilla.org', desc: '权威的 Web 开发文档' },
+    { name: 'GitHub', url: 'https://github.com', desc: '代码托管与协作平台' },
+    { name: 'Stack Overflow', url: 'https://stackoverflow.com', desc: '开发者问答社区' },
+    { name: 'freeCodeCamp', url: 'https://www.freecodecamp.org', desc: '免费编程学习平台' }
+  ]
 
   return (
     <div className="app">
-      {/* Decorative Background */}
-      <div className="decoration decoration-1"></div>
-      <div className="decoration decoration-2"></div>
-
-      {/* Header */}
-      <header className="header">
-        <div className="header-inner">
-          <a href="#" className="logo">Documentation</a>
-          <nav className="nav">
-            <a href="#" className="active">文档</a>
-            <a href="#">指南</a>
-            <a href="#">API</a>
-            <a href="#">示例</a>
-            <a href="#">GitHub</a>
-          </nav>
-        </div>
-      </header>
-
-      {/* Main Container */}
-      <div className="container">
-        {/* Sidebar */}
-        <aside className="sidebar">
-          <SidebarSection title="快速开始">
-            <SidebarLink 
-              href="#intro" 
-              active={activeSection === 'intro'}
-              onClick={(e) => scrollToSection(e, 'intro')}
-            >
-              简介
-            </SidebarLink>
-            <SidebarLink 
-              href="#installation" 
-              active={activeSection === 'installation'}
-              onClick={(e) => scrollToSection(e, 'installation')}
-            >
-              安装
-            </SidebarLink>
-            <SidebarLink 
-              href="#usage" 
-              active={activeSection === 'usage'}
-              onClick={(e) => scrollToSection(e, 'usage')}
-            >
-              使用方法
-            </SidebarLink>
-            <SidebarLink 
-              href="#config" 
-              active={activeSection === 'config'}
-              onClick={(e) => scrollToSection(e, 'config')}
-            >
-              配置
-            </SidebarLink>
-          </SidebarSection>
-
-          <SidebarSection title="核心概念">
-            <SidebarLink href="#components">组件</SidebarLink>
-            <SidebarLink href="#routing">路由</SidebarLink>
-            <SidebarLink href="#state">状态管理</SidebarLink>
-            <SidebarLink href="#hooks">Hooks</SidebarLink>
-          </SidebarSection>
-
-          <SidebarSection title="进阶指南">
-            <SidebarLink href="#optimization">性能优化</SidebarLink>
-            <SidebarLink 
-              href="#deployment" 
-              active={activeSection === 'deployment'}
-              onClick={(e) => scrollToSection(e, 'deployment')}
-            >
-              部署
-            </SidebarLink>
-            <SidebarLink href="#best-practices">最佳实践</SidebarLink>
-          </SidebarSection>
-        </aside>
-
-        {/* Main Content */}
-        <main className="content">
-          <div className="hero">
-            <h1>构建现代化的 Web 应用</h1>
-            <p>使用 Vite 和 React 快速构建高性能、可扩展的用户界面。体验极速的开发环境和优雅的开发体验。</p>
+      {/* 导航栏 */}
+      <nav className="navbar" style={{ transform: `translateY(${Math.min(scrollY / 10, 10)}px)` }}>
+        <div className="nav-container">
+          <div className="logo">
+            <span className="logo-icon">📚</span>
+            <span className="logo-text">Learning Hub</span>
           </div>
+          <div className="nav-links">
+            <a href="#home" className={activeSection === 'home' ? 'active' : ''} onClick={() => setActiveSection('home')}>首页</a>
+            <a href="#paths" className={activeSection === 'paths' ? 'active' : ''} onClick={() => setActiveSection('paths')}>学习路径</a>
+            <a href="#notes" className={activeSection === 'notes' ? 'active' : ''} onClick={() => setActiveSection('notes')}>笔记</a>
+            <a href="#resources" className={activeSection === 'resources' ? 'active' : ''} onClick={() => setActiveSection('resources')}>资源</a>
+          </div>
+        </div>
+      </nav>
 
-          <section id="intro" className="section">
-            <h2>简介</h2>
-            <p>Vite 是新一代前端构建工具，它利用浏览器原生 ES 模块支持和编译到原生的语言开发的工具（如 esbuild）来提供快速且现代的开发体验。</p>
-            
-            <div className="cards">
-              <FeatureCard 
-                icon="⚡️" 
-                title="极速启动"
-                description="即时的服务器启动，无论项目大小如何都能保持快速。"
-              />
-              <FeatureCard 
-                icon="🔥" 
-                title="热更新"
-                description="闪电般的 HMR，始终保持应用状态。"
-              />
-              <FeatureCard 
-                icon="🛠️" 
-                title="丰富功能"
-                description="开箱即用支持 TypeScript、JSX、CSS 等。"
-              />
+      {/* Hero 区域 */}
+      <section className="hero" id="home">
+        <div className="hero-background">
+          <div className="floating-shape shape-1"></div>
+          <div className="floating-shape shape-2"></div>
+          <div className="floating-shape shape-3"></div>
+        </div>
+        <div className="hero-content">
+          <h1 className="hero-title">
+            <span className="title-line">持续学习</span>
+            <span className="title-line accent">不断进步</span>
+          </h1>
+          <p className="hero-subtitle">记录技术成长的每一步，构建知识体系</p>
+          <div className="hero-stats">
+            <div className="stat-item">
+              <div className="stat-number">128</div>
+              <div className="stat-label">学习天数</div>
             </div>
-          </section>
-
-          <section id="installation" className="section">
-            <h2>安装</h2>
-            <p>使用你喜欢的包管理器快速创建一个新的 Vite 项目：</p>
-
-            <CodeBlock language="bash">
-{`# npm
-npm create vite@latest my-react-app -- --template react
-
-# yarn
-yarn create vite my-react-app --template react
-
-# pnpm
-pnpm create vite my-react-app --template react`}
-            </CodeBlock>
-
-            <p>然后进入项目目录并安装依赖：</p>
-
-            <CodeBlock language="bash">
-{`cd my-react-app
-npm install
-npm run dev`}
-            </CodeBlock>
-
-            <Callout title="提示">
-              你也可以使用 <code>--template react-ts</code> 来创建一个 TypeScript 项目。
-            </Callout>
-          </section>
-
-          <section id="usage" className="section">
-            <h2>基本使用</h2>
-            
-            <h3>创建组件</h3>
-            <p>在 React 中创建组件非常简单。以下是一个函数式组件的示例：</p>
-
-            <CodeBlock language="jsx">
-{`import { useState } from 'react'
-
-function Counter() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div>
-      <h1>计数器: {count}</h1>
-      <button onClick={() => setCount(count + 1)}>
-        增加
-      </button>
-    </div>
-  )
-}
-
-export default Counter`}
-            </CodeBlock>
-
-            <h3>样式处理</h3>
-            <p>Vite 支持多种样式解决方案，包括 CSS、CSS Modules、Sass、Less 等：</p>
-
-            <CodeBlock language="javascript">
-{`// 引入 CSS 文件
-import './App.css'
-
-// 使用 CSS Modules
-import styles from './App.module.css'
-
-// 使用 Sass
-import './styles.scss'`}
-            </CodeBlock>
-          </section>
-
-          <section id="config" className="section">
-            <h2>配置</h2>
-            <p>Vite 的配置文件 <code>vite.config.js</code> 非常简洁且强大：</p>
-
-            <CodeBlock language="javascript">
-{`import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-export default defineConfig({
-  plugins: [react()],
-  base: '/your-repo-name/', // GitHub Pages 路径
-  build: {
-    outDir: 'dist',
-    sourcemap: true
-  },
-  server: {
-    port: 3000,
-    open: true
-  }
-})`}
-            </CodeBlock>
-          </section>
-
-          <section id="deployment" className="section">
-            <h2>部署到 GitHub Pages</h2>
-            <p>将你的 Vite 应用部署到 GitHub Pages 非常简单。首先，确保在 <code>vite.config.js</code> 中设置了正确的 <code>base</code> 路径。</p>
-
-            <h3>步骤 1: 构建项目</h3>
-            <CodeBlock language="bash">
-{`npm run build`}
-            </CodeBlock>
-
-            <h3>步骤 2: 部署</h3>
-            <p>你可以使用 <code>gh-pages</code> 包来简化部署流程：</p>
-
-            <CodeBlock language="bash">
-{`# 安装 gh-pages
-npm install -D gh-pages
-
-# 在 package.json 中添加部署脚本
-{
-  "scripts": {
-    "deploy": "gh-pages -d dist"
-  }
-}
-
-# 执行部署
-npm run deploy`}
-            </CodeBlock>
-
-            <Callout title="重要提示">
-              确保在仓库设置中启用 GitHub Pages，并将源设置为 <code>gh-pages</code> 分支。
-            </Callout>
-
-            <div style={{ marginTop: '3rem', display: 'flex', gap: '1rem' }}>
-              <button className="btn">开始使用</button>
-              <button className="btn btn-secondary">查看示例</button>
+            <div className="stat-item">
+              <div className="stat-number">42</div>
+              <div className="stat-label">项目实践</div>
             </div>
-          </section>
-        </main>
-      </div>
+            <div className="stat-item">
+              <div className="stat-number">256</div>
+              <div className="stat-label">笔记数量</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      {/* Footer */}
+      {/* 学习路径 */}
+      <section className="learning-paths" id="paths">
+        <div className="section-header">
+          <h2 className="section-title">学习路径</h2>
+          <p className="section-subtitle">系统化的知识体系构建</p>
+        </div>
+        <div className="paths-grid">
+          {learningPaths.map((path, index) => (
+            <div 
+              className="path-card" 
+              key={path.id}
+              style={{ 
+                animationDelay: `${index * 0.1}s`,
+                '--card-color': path.color 
+              }}
+            >
+              <div className="path-header">
+                <span className="path-icon">{path.icon}</span>
+                <div className="path-title-group">
+                  <h3 className="path-title">{path.title}</h3>
+                  <p className="path-subtitle">{path.subtitle}</p>
+                </div>
+              </div>
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill" 
+                  style={{ 
+                    width: `${path.progress}%`,
+                    backgroundColor: path.color 
+                  }}
+                ></div>
+                <span className="progress-text">{path.progress}%</span>
+              </div>
+              <div className="path-topics">
+                {path.topics.map((topic, i) => (
+                  <span className="topic-tag" key={i}>{topic}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 知识卡片 */}
+      <section className="knowledge-section" id="notes">
+        <div className="section-header">
+          <h2 className="section-title">学习笔记</h2>
+          <p className="section-subtitle">知识积累与总结</p>
+        </div>
+        <div className="knowledge-grid">
+          {knowledgeCards.map((category, catIndex) => (
+            <div className="knowledge-category" key={catIndex}>
+              <h3 className="category-title">{category.category}</h3>
+              <div className="cards-list">
+                {category.items.map((item, itemIndex) => (
+                  <div 
+                    className="knowledge-card" 
+                    key={itemIndex}
+                    style={{ animationDelay: `${(catIndex * 3 + itemIndex) * 0.05}s` }}
+                  >
+                    <div className="card-main">
+                      <h4 className="card-title">{item.title}</h4>
+                      <p className="card-date">{item.date}</p>
+                    </div>
+                    <div className="card-tags">
+                      {item.tags.map((tag, tagIndex) => (
+                        <span className="mini-tag" key={tagIndex}>{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 学习资源 */}
+      <section className="resources-section" id="resources">
+        <div className="section-header">
+          <h2 className="section-title">学习资源</h2>
+          <p className="section-subtitle">精选的开发者资源</p>
+        </div>
+        <div className="resources-grid">
+          {resources.map((resource, index) => (
+            <a 
+              href={resource.url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="resource-card"
+              key={index}
+              style={{ animationDelay: `${index * 0.08}s` }}
+            >
+              <div className="resource-icon">🔗</div>
+              <div className="resource-content">
+                <h4 className="resource-name">{resource.name}</h4>
+                <p className="resource-desc">{resource.desc}</p>
+              </div>
+              <div className="resource-arrow">→</div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* 页脚 */}
       <footer className="footer">
-        <p>© 2024 Documentation. 使用 Vite + React 构建，托管于 GitHub Pages.</p>
+        <div className="footer-content">
+          <p>© 2024 Learning Hub. 持续学习，永不止步。</p>
+          <div className="footer-links">
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <span>·</span>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+            <span>·</span>
+            <a href="mailto:your@email.com">Email</a>
+          </div>
+        </div>
       </footer>
-    </div>
-  )
-}
-
-// Sidebar Components
-function SidebarSection({ title, children }) {
-  return (
-    <div className="sidebar-section">
-      <h3 className="sidebar-title">{title}</h3>
-      <ul className="sidebar-links">
-        {children}
-      </ul>
-    </div>
-  )
-}
-
-function SidebarLink({ href, active, onClick, children }) {
-  return (
-    <li>
-      <a 
-        href={href} 
-        className={active ? 'active' : ''} 
-        onClick={onClick}
-      >
-        {children}
-      </a>
-    </li>
-  )
-}
-
-// Feature Card Component
-function FeatureCard({ icon, title, description }) {
-  return (
-    <div className="card">
-      <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>{icon}</div>
-      <h3>{title}</h3>
-      <p>{description}</p>
-    </div>
-  )
-}
-
-// Code Block Component
-function CodeBlock({ language, children }) {
-  return (
-    <div className="code-block">
-      <pre>
-        <code>{children}</code>
-      </pre>
-    </div>
-  )
-}
-
-// Callout Component
-function Callout({ title, children }) {
-  return (
-    <div className="callout">
-      <div className="callout-title">{title}</div>
-      <p>{children}</p>
     </div>
   )
 }
